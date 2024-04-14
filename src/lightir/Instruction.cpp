@@ -48,6 +48,33 @@ IBinaryInst *IBinaryInst::create_sdiv(Value *v1, Value *v2, BasicBlock *bb) {
 IBinaryInst *IBinaryInst::create_srem(Value *v1, Value *v2, BasicBlock *bb) {
     return create(srem, v1, v2, bb);
 }
+IBinaryInst *IBinaryInst::create_mul64(Value *v1, Value *v2, BasicBlock *bb){
+    return create(mul64, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_ashr64(Value *v1, Value *v2, BasicBlock *bb){
+    return create(ashr64, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_lshr64(Value *v1, Value *v2, BasicBlock *bb){
+    return create(lshr64, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_shl(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(shl, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_ashr(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(ashr, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_lshr(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(lshr, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_and(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(land, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_or(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(lor, v1, v2, bb);
+}
+IBinaryInst *IBinaryInst::create_xor(Value *v1, Value *v2, BasicBlock *bb) {
+    return create(lxor, v1, v2, bb);
+}
 
 FBinaryInst::FBinaryInst(OpID id, Value *v1, Value *v2, BasicBlock *bb)
     : BaseInst<FBinaryInst>(bb->get_module()->get_float_type(), id, bb) {
@@ -97,7 +124,6 @@ ICmpInst *ICmpInst::create_eq(Value *v1, Value *v2, BasicBlock *bb) {
 ICmpInst *ICmpInst::create_ne(Value *v1, Value *v2, BasicBlock *bb) {
     return create(ne, v1, v2, bb);
 }
-
 FCmpInst::FCmpInst(OpID id, Value *lhs, Value *rhs, BasicBlock *bb)
     : BaseInst<FCmpInst>(bb->get_module()->get_int1_type(), id, bb) {
     assert(lhs->get_type()->is_float_type() &&
@@ -183,8 +209,8 @@ BranchInst::~BranchInst() {
     }
     for (auto succ_bb : succs) {
         if (succ_bb) {
-            LOG_DEBUG << "Remove pre/succ" << succ_bb->get_name() << " "
-                      << get_parent()->get_name();
+         //   LOG_DEBUG << "Remove pre/succ" << succ_bb->get_name() << " "
+         //             << get_parent()->get_name();
             succ_bb->remove_pre_basic_block(get_parent());
             get_parent()->remove_succ_basic_block(succ_bb);
         }

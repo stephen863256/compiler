@@ -86,6 +86,7 @@ void Function::set_instr_name() {
 
 std::string Function::print() {
     set_instr_name();
+    has_mul.clear();
     std::string func_ir;
     if (this->is_declaration()) {
         func_ir += "declare ";

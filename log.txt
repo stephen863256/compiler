@@ -1,0 +1,635 @@
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  0 passes
+[DEBUG] (Mem2Reg.cpp:37L  run)@k = global i32 zeroinitializer
+declare i32 @getint()
+
+declare i32 @getch()
+
+declare float @getfloat()
+
+declare void @putint(i32)
+
+declare void @putch(i32)
+
+declare void @putfloat(float)
+
+declare i32 @getarray(i32*)
+
+declare i32 @getfarray(float*)
+
+declare void @putarray(i32, i32*)
+
+declare void @putfarray(i32, float*)
+
+declare void @_sysy_starttime(i32)
+
+declare void @_sysy_stoptime(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  %op2 = zext i1 %op1 to i32
+  %op3 = icmp ne i32 %op2, 0
+  br i1 %op3, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op5 = add i32 %op4, 1
+  store i32 %op5, i32* @k
+  %op6 = alloca i32
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op7 = phi i32 [ %op12, %label_afterBB0 ], [ undef, %label_falseBB0 ]
+  %op8 = phi i32 [ %op13, %label_afterBB0 ], [ undef, %label_falseBB0 ]
+  %op9 = phi i32 [ %op14, %label_afterBB0 ], [ undef, %label_falseBB0 ]
+  %op10 = phi i32 [ %op15, %label_afterBB0 ], [ undef, %label_falseBB0 ]
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op12 = phi i32 [ %op38, %label_mergeBB1 ], [ undef, %label_trueBB0 ]
+  %op13 = phi i32 [ %op39, %label_mergeBB1 ], [ undef, %label_trueBB0 ]
+  %op14 = phi i32 [ %op40, %label_mergeBB1 ], [ undef, %label_trueBB0 ]
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op16 = load i32, i32* %op6
+  %op17 = icmp sgt i32 %op15, 10
+  %op18 = zext i1 %op17 to i32
+  %op19 = icmp ne i32 %op18, 0
+  br i1 %op19, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op20 = load i32, i32* %op6
+  %op21 = sub i32 %op15, 88
+  %op22 = load i32, i32* %op6
+  %op23 = icmp slt i32 %op21, 1000
+  %op24 = zext i1 %op23 to i32
+  %op25 = icmp ne i32 %op24, 0
+  br i1 %op25, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  %op26 = load i32, i32* %op6
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op27 = alloca i32
+  %op28 = alloca i32
+  %op29 = load i32, i32* %op6
+  %op30 = load i32, i32* %op27
+  %op31 = sub i32 %op21, 10
+  %op32 = alloca i32
+  %op33 = load i32, i32* %op6
+  %op34 = load i32, i32* %op32
+  %op35 = add i32 %op31, 11
+  %op36 = load i32, i32* %op28
+  %op37 = add i32 %op35, 11
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op38 = phi i32 [ 11, %label_trueBB1 ], [ %op12, %label_falseBB1 ]
+  %op39 = phi i32 [ 11, %label_trueBB1 ], [ %op13, %label_falseBB1 ]
+  %op40 = phi i32 [ 10, %label_trueBB1 ], [ %op14, %label_falseBB1 ]
+  %op41 = phi i32 [ %op37, %label_trueBB1 ], [ %op21, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  1 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getint 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getch 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getfloat 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putch 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putfloat 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getfarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putfarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process _sysy_starttime 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process _sysy_stoptime 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)_sysy_stoptime is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)_sysy_starttime is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getfarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putfloat is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putfarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putch is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getfloat is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getch is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 23 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare i32 @getint()
+
+declare i32 @getch()
+
+declare float @getfloat()
+
+declare void @putint(i32)
+
+declare void @putch(i32)
+
+declare void @putfloat(float)
+
+declare i32 @getarray(i32*)
+
+declare i32 @getfarray(float*)
+
+declare void @putarray(i32, i32*)
+
+declare void @putfarray(i32, float*)
+
+declare void @_sysy_starttime(i32)
+
+declare void @_sysy_stoptime(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  %op2 = zext i1 %op1 to i32
+  %op3 = icmp ne i32 %op2, 0
+  br i1 %op3, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op5 = add i32 %op4, 1
+  store i32 %op5, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  %op18 = zext i1 %op17 to i32
+  %op19 = icmp ne i32 %op18, 0
+  br i1 %op19, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op21 = sub i32 %op15, 88
+  %op23 = icmp slt i32 %op21, 1000
+  %op24 = zext i1 %op23 to i32
+  %op25 = icmp ne i32 %op24, 0
+  br i1 %op25, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op31 = sub i32 %op21, 10
+  %op35 = add i32 %op31, 11
+  %op37 = add i32 %op35, 11
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op37, %label_trueBB1 ], [ %op21, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  2 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  3 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  4 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  5 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getint 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getch 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getfloat 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putch 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putfloat 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process getfarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putfarray 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process _sysy_starttime 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process _sysy_stoptime 0 0
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)_sysy_stoptime is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)_sysy_starttime is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getfarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putfloat is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putfarray is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putch is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getfloat is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getch is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)getint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 0 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare i32 @getint()
+
+declare i32 @getch()
+
+declare float @getfloat()
+
+declare void @putint(i32)
+
+declare void @putch(i32)
+
+declare void @putfloat(float)
+
+declare i32 @getarray(i32*)
+
+declare i32 @getfarray(float*)
+
+declare void @putarray(i32, i32*)
+
+declare void @putfarray(i32, float*)
+
+declare void @_sysy_starttime(i32)
+
+declare void @_sysy_stoptime(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  %op2 = zext i1 %op1 to i32
+  %op3 = icmp ne i32 %op2, 0
+  br i1 %op3, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op5 = add i32 %op4, 1
+  store i32 %op5, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  %op18 = zext i1 %op17 to i32
+  %op19 = icmp ne i32 %op18, 0
+  br i1 %op19, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op21 = sub i32 %op15, 88
+  %op23 = icmp slt i32 %op21, 1000
+  %op24 = zext i1 %op23 to i32
+  %op25 = icmp ne i32 %op24, 0
+  br i1 %op25, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op31 = sub i32 %op21, 10
+  %op35 = add i32 %op31, 11
+  %op37 = add i32 %op35, 11
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op37, %label_trueBB1 ], [ %op21, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  6 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  7 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  8 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  9 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  10 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  11 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 6 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare void @putint(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  br i1 %op1, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op5 = add i32 %op4, 1
+  store i32 %op5, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  br i1 %op17, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op21 = sub i32 %op15, 88
+  %op23 = icmp slt i32 %op21, 1000
+  br i1 %op23, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op31 = sub i32 %op21, 10
+  %op35 = add i32 %op31, 11
+  %op37 = add i32 %op35, 11
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op37, %label_trueBB1 ], [ %op21, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  12 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  13 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  14 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 12 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare void @putint(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  br i1 %op1, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op42 = add i32 %op4, 1
+  store i32 %op42, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  br i1 %op17, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op43 = add i32 %op15, -88
+  %op23 = icmp slt i32 %op43, 1000
+  br i1 %op23, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op44 = add i32 %op15, -76
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op44, %label_trueBB1 ], [ %op43, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  15 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  16 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 0 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare void @putint(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  br i1 %op1, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op42 = add i32 %op4, 1
+  store i32 %op42, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  br i1 %op17, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op43 = add i32 %op15, -88
+  %op23 = icmp slt i32 %op43, 1000
+  br i1 %op23, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op44 = add i32 %op15, -76
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op44, %label_trueBB1 ], [ %op43, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  17 passes
+[DEBUG] (PassManager.hpp:31L  run)PassManager: run  18 passes
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process putint 1 0
+[INFO] (FuncInfo.cpp:60L  process)call void @putint(i32 %op15) uses func: putint
+[DEBUG] (FuncInfo.cpp:58L  process)FuncInfo: process main 0 10
+[INFO] (FuncInfo.cpp:27L  log)main is pure? 0
+[INFO] (FuncInfo.cpp:27L  log)putint is pure? 0
+[INFO] (DeadCode.cpp:17L  run)dead code pass erased 0 instructions
+[INFO] (DeadCode.cpp:18L  run)@k = global i32 zeroinitializer
+declare void @putint(i32)
+
+define i32 @main() {
+label_entry:
+  store i32 3389, i32* @k
+  %op0 = load i32, i32* @k
+  %op1 = icmp slt i32 %op0, 10000
+  br i1 %op1, label %label_trueBB0, label %label_falseBB0
+label_trueBB0:                                                ; preds = %label_entry
+  %op4 = load i32, i32* @k
+  %op42 = add i32 %op4, 1
+  store i32 %op42, i32* @k
+  br label %label_testBB0
+label_falseBB0:                                                ; preds = %label_entry
+  br label %label_mergeBB0
+label_mergeBB0:                                                ; preds = %label_afterBB0, %label_falseBB0
+  %op11 = load i32, i32* @k
+  ret i32 %op11
+label_testBB0:                                                ; preds = %label_trueBB0, %label_mergeBB1
+  %op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+  %op17 = icmp sgt i32 %op15, 10
+  br i1 %op17, label %label_condBB0, label %label_afterBB0
+label_condBB0:                                                ; preds = %label_testBB0
+  %op43 = add i32 %op15, -88
+  %op23 = icmp slt i32 %op43, 1000
+  br i1 %op23, label %label_trueBB1, label %label_falseBB1
+label_afterBB0:                                                ; preds = %label_testBB0
+  call void @putint(i32 %op15)
+  br label %label_mergeBB0
+label_trueBB1:                                                ; preds = %label_condBB0
+  %op44 = add i32 %op15, -76
+  br label %label_mergeBB1
+label_falseBB1:                                                ; preds = %label_condBB0
+  br label %label_mergeBB1
+label_mergeBB1:                                                ; preds = %label_trueBB1, %label_falseBB1
+  %op41 = phi i32 [ %op44, %label_trueBB1 ], [ %op43, %label_falseBB1 ]
+  br label %label_testBB0
+}
+
+[DEBUG] (RegAlloc.cpp:63L  compute_reg_alloc)Start RegAlloc
+[DEBUG] (RegAlloc.cpp:781L  run)Function: main
+[DEBUG] (RegAlloc.cpp:839L  run)Start Iterative Dataflow Analysis
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_mergeBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_afterBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_falseBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_mergeBB1
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_falseBB1
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_trueBB1
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_condBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_testBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_trueBB0
+[DEBUG] (RegAlloc.cpp:557L  build_intervals)BasicBlock: label_entry
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 12
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 13
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    12 op0
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 12
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    13 op1
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 13
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    13 op42
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    12 op4
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 12
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 13
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 14
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 15
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    14 op17
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 14
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 16
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    12 op15
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    13 op41
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    16 op44
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    15 op43
+[DEBUG] (RegAlloc.cpp:141L  walk_intervals)interval->reg_id    14 op23
+[DEBUG] (RegAlloc.cpp:360L  alloc_reg)current_reg_id: 4
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op0 12
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 2 6
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 4
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 2
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op1 13
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 4 8
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 6
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 4
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op4 12
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 8 12
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 10
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 8
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op42 13
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 10 14
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 12
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 10
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op15 12
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 16 30
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 40 42
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 40
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 28
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 22
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 18
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 16
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op41 13
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 16 18
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 34 38
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 34
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 16
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op17 14
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 18 22
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 20
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 18
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op43 15
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 22 28
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 32 36
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 34
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 24
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 22
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op23 14
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 24 28
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 26
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 24
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op44 16
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 28 32
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 34 36
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 34
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 28
+[DEBUG] (RegAlloc.cpp:105L  run)Interval: op11 4
+[DEBUG] (RegAlloc.cpp:108L  run)Range: 44 48
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 46
+[DEBUG] (RegAlloc.cpp:112L  run)Use Pos: 44
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op1 13
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op0 12
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op4 12
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op17 14
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op23 14
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op43 15
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op42 13
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op11 4
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op15 12
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op41 13
+[DEBUG] (RegAlloc.cpp:77L  compute_reg_alloc)ireg_alloc: op44 16
+[DEBUG] (CodeGen1.cpp:1288L  run)store i32 3389, i32* @k
+[DEBUG] (CodeGen1.cpp:1288L  run)%op0 = load i32, i32* @k
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 12  op0
+[DEBUG] (CodeGen1.cpp:1288L  run)%op1 = icmp slt i32 %op0, 10000
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 13  op1
+[DEBUG] (CodeGen1.cpp:1288L  run)br i1 %op1, label %label_trueBB0, label %label_falseBB0
+[DEBUG] (CodeGen1.cpp:1302L  run)label_trueBB0 label_falseBB0
+[DEBUG] (CodeGen1.cpp:1239L  run)label_trueBB0
+[DEBUG] (CodeGen1.cpp:1244L  run)label_trueBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)%op4 = load i32, i32* @k
+[DEBUG] (CodeGen1.cpp:1288L  run)%op42 = add i32 %op4, 1
+[DEBUG] (CodeGen1.cpp:1288L  run)store i32 %op42, i32* @k
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_testBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)%op15 = phi i32 [ 112, %label_trueBB0 ], [ %op41, %label_mergeBB1 ]
+[DEBUG] (CodeGen1.cpp:1288L  run)%op17 = icmp sgt i32 %op15, 10
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 14  op17
+[DEBUG] (CodeGen1.cpp:1288L  run)br i1 %op17, label %label_condBB0, label %label_afterBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)%op43 = add i32 %op15, -88
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 15  op43
+[DEBUG] (CodeGen1.cpp:1288L  run)%op23 = icmp slt i32 %op43, 1000
+[DEBUG] (CodeGen1.cpp:1288L  run)br i1 %op23, label %label_trueBB1, label %label_falseBB1
+[DEBUG] (CodeGen1.cpp:1302L  run)label_trueBB1 label_falseBB1
+[DEBUG] (CodeGen1.cpp:1239L  run)label_trueBB1
+[DEBUG] (CodeGen1.cpp:1244L  run)label_trueBB1
+[DEBUG] (CodeGen1.cpp:1288L  run)%op44 = add i32 %op15, -76
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 16  op44
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_mergeBB1
+[DEBUG] (CodeGen1.cpp:1239L  run)label_falseBB1
+[DEBUG] (CodeGen1.cpp:1244L  run)label_falseBB1
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_mergeBB1
+[DEBUG] (CodeGen1.cpp:1288L  run)%op41 = phi i32 [ %op44, %label_trueBB1 ], [ %op43, %label_falseBB1 ]
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_testBB0
+[DEBUG] (CodeGen1.cpp:1239L  run)label_falseBB0
+[DEBUG] (CodeGen1.cpp:1244L  run)label_falseBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_mergeBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)call void @putint(i32 %op15)
+[DEBUG] (CodeGen1.cpp:881L  gen_call)12 op0
+[DEBUG] (CodeGen1.cpp:881L  gen_call)13 op1
+[DEBUG] (CodeGen1.cpp:893L  gen_call)gen_callputint
+[DEBUG] (CodeGen1.cpp:918L  gen_call)op15-40
+[DEBUG] (CodeGen1.cpp:1288L  run)br label %label_mergeBB0
+[DEBUG] (CodeGen1.cpp:1288L  run)%op11 = load i32, i32* @k
+[DEBUG] (CodeGen1.cpp:294L  get_reg)ireg_map 4  op11
+[DEBUG] (CodeGen1.cpp:1288L  run)ret i32 %op11

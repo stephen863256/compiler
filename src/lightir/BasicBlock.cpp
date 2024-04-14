@@ -51,6 +51,7 @@ void BasicBlock::replace_instruction(Instruction *old_instr,Instruction *new_ins
     }
 }
 std::string BasicBlock::print() {
+
     std::string bb_ir;
     //LOG_DEBUG << "print bb: \n\n\n\n" << this->get_name();
     bb_ir += this->get_name();

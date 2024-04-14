@@ -10,10 +10,11 @@
 
 void UnconditionalBr::run() {
     Dominators dom(module_);
-    LOG_DEBUG << "UnconditionalBr::run()";
+   // LOG_INFO << module_->print();
+   // LOG_DEBUG << "UnconditionalBr::run()";
     find_func();
     delete_unused_func();
-    LOG_INFO << module_->print();
+
     for(auto &F : module_->get_functions()){
         auto func = &F;
         if(func->get_basic_blocks().size() == 0){
@@ -29,15 +30,15 @@ void UnconditionalBr::run() {
             br_list.clear();
             mark(func);
             for(auto &br : br_list){
-                LOG_DEBUG << "erase br: " << br->print();
+             //   LOG_DEBUG << "erase br: " << br->print();
             }
-            LOG_DEBUG << "erase br_list size: " << br_list.size();
+        //    LOG_DEBUG << "erase br_list size: " << br_list.size();
             if(br_list.size() == 0){
                 break;
             }
             sweep(func);
             if(func->get_basic_blocks().size() != func_bb_size){
-                LOG_DEBUG << "func name: " << func->get_name();
+           //     LOG_DEBUG << "func name: " << func->get_name();
                 func_bb_size = func->get_basic_blocks().size();
                 changed = true;
             }
@@ -57,7 +58,28 @@ void UnconditionalBr::run() {
     func_list.clear();
     find_func();
     delete_unused_func();
-    LOG_INFO << module_->print();
+    for(auto &F:module_->get_functions())
+    {
+        auto func = &F;
+        for(auto &bb: func->get_basic_blocks())
+        {
+            for(auto iter = bb.get_instructions().begin();iter != bb.get_instructions().end();iter ++)
+            {
+                auto &inst = *iter;
+                if(inst.is_cmp() || inst.is_fcmp())
+                {
+                    auto iter_next = std::next(iter);
+                    auto iter_next_next = std::next(iter_next);
+                    auto &inst_next = *iter_next;
+                    auto &inst_next_next = *iter_next_next;
+                    auto &inst_next_next_next = *std::next(iter_next_next);
+                    if(inst_next.is_zext() && inst_next_next.is_cmp() && inst_next_next_next.is_br())
+                        inst_next_next.replace_all_use_with(&inst);
+                }
+            }
+        }
+    }
+   // LOG_INFO << module_->print();
 }
 
 void UnconditionalBr::find_func(){
@@ -143,9 +165,9 @@ void UnconditionalBr::sweep(Function *func){
         auto bb = dynamic_cast<BasicBlock *>(br->get_operand(0));
         auto pre_bb = bb->get_pre_basic_blocks();
         auto pre_bb1 = pre_bb.front();
-        LOG_DEBUG << br->print();
-        LOG_DEBUG << pre_bb1->get_name();
-        LOG_DEBUG << "pre_bb size: " << pre_bb.size();
+        //LOG_DEBUG << br->print();
+        //LOG_DEBUG << pre_bb1->get_name();
+       // LOG_DEBUG << "pre_bb size: " << pre_bb.size();
         assert(pre_bb.size() == 1 && br->get_parent() == pre_bb1);
 
         pre_bb1->erase_instr(br);
@@ -156,7 +178,7 @@ void UnconditionalBr::sweep(Function *func){
         }
         for(auto &inst : inst_list)
         {
-            LOG_DEBUG << "move inst: " << inst->print();
+        //    LOG_DEBUG << "move inst: " << inst->print();
             if(!inst->is_br())
             {
                 
@@ -174,7 +196,7 @@ void UnconditionalBr::sweep(Function *func){
                 }
                 else
                 {
-                    LOG_DEBUG << "create br: " << br->print();
+                   // LOG_DEBUG << "create br: " << br->print();
                     auto new_br = BranchInst::create_br(dynamic_cast<BasicBlock *>(br->get_operand(0)),pre_bb1);
                 }
             }
@@ -199,7 +221,7 @@ void UnconditionalBr::sweep(Function *func){
                 }
             }
         }
-        LOG_DEBUG << "erase bb: " << bb->get_name();
+      //  LOG_DEBUG << "erase bb: " << bb->get_name();
      //   LOG_DEBUG <<  bb->get_succ_basic_blocks().front()->get_name();
       //  LOG_DEBUG <<  bb->get_succ_basic_blocks().front()->get_pre_basic_blocks().front()->get_name();
       //  bb->get_succ_basic_blocks().front()->get_pre_basic_blocks().remove(bb);
@@ -211,7 +233,7 @@ void UnconditionalBr::sweep(Function *func){
      //      bb->erase_instr(inst);
      //   }
         func->remove(bb);
-        LOG_INFO << module_->print();
+      //  LOG_INFO << module_->print();
     }
 //}
 
@@ -219,13 +241,13 @@ void UnconditionalBr::remove_single_return(Function *func)
 {
     
     auto entry_bb = func->get_entry_block();
-    LOG_INFO << func->print();
+   // LOG_INFO << func->print();
     if(entry_bb->get_num_of_instr() == 1)
     {
         auto &inst = entry_bb->get_instructions().front();
         if(inst.is_ret())
         {
-            LOG_DEBUG << "remove single return begin";
+         //   LOG_DEBUG << "remove single return begin";
             auto ret_inst = dynamic_cast<ReturnInst *>(&inst);
             if(ret_inst->is_void_ret())
             {
@@ -259,11 +281,11 @@ void UnconditionalBr::remove_single_return(Function *func)
                         {
                             if(inst.is_call())
                             {
-                                LOG_DEBUG << "remove single return call inst: " << inst.print();
+                             //   LOG_DEBUG << "remove single return call inst: " << inst.print();
                                 auto call_inst = dynamic_cast<CallInst *>(&inst);
                                 if(call_inst->get_operand(0) == func)
                                 {
-                                    LOG_DEBUG << "value: " << val->print();
+                                 //   LOG_DEBUG << "value: " << val->print();
                                     call_inst->replace_all_use_with(val);
                                     move_list.push_back(&inst);
                                 }

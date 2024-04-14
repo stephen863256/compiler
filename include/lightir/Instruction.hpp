@@ -50,9 +50,18 @@ class Instruction : public User, public llvm::ilist_node<Instruction> {
         getelementptr,
         zext, // zero extend
         fptosi,
-        sitofp
-        // float binary operators Logical operators
+        sitofp,
+        //  Logical operators
+        land,
+        lor,
+        lxor,
+        shl,
+        lshr,
+        ashr,
 
+        mul64,
+        lshr64,
+        ashr64,
     };
     /* @parent: if parent!=nullptr, auto insert to bb
      * @ty: result type */
@@ -97,15 +106,33 @@ class Instruction : public User, public llvm::ilist_node<Instruction> {
     bool is_si2fp() const { return op_id_ == sitofp; }
 
     bool is_cmp() const { return ge <= op_id_ and op_id_ <= ne; }
+    bool is_ne() const { return op_id_ == ne; }
+    bool is_eq() const { return op_id_ == eq; }
+    bool is_ge() const { return op_id_ == ge; }
+    bool is_gt() const { return op_id_ == gt; }
+    bool is_le() const { return op_id_ == le; }
+    bool is_lt() const { return op_id_ == lt; }
+    
+    bool is_mul64() const { return op_id_ == mul64; }
+    bool is_lshr64() const { return op_id_ == lshr64; }
+    bool is_ashr64() const { return op_id_ == ashr64; }
+
+
     bool is_fcmp() const { return fge <= op_id_ and op_id_ <= fne; }
 
     bool is_call() const { return op_id_ == call; }
     bool is_gep() const { return op_id_ == getelementptr; }
     bool is_zext() const { return op_id_ == zext; }
-
+    bool is_and() const { return op_id_ == land; }
+    bool is_or() const { return op_id_ == lor; }
+    bool is_xor() const { return op_id_ == lxor; }
+    bool is_shl() const { return op_id_ == shl; }
+    bool is_lshr() const { return op_id_ == lshr; }
+    bool is_ashr() const { return op_id_ == ashr; }
     bool isBinary() const {
         return (is_add() || is_sub() || is_mul() || is_div() || is_rem() || is_fadd() ||
-                is_fsub() || is_fmul() || is_fdiv()) &&
+                is_fsub() || is_fmul() || is_fdiv() || is_and() || is_or() || is_xor() || is_shl() ||
+                is_lshr() || is_ashr()) &&
                (get_num_operand() == 2);
     }
     bool is_int_binary() const {
@@ -116,9 +143,12 @@ class Instruction : public User, public llvm::ilist_node<Instruction> {
     }
     bool isTerminator() const { return is_br() || is_ret(); }
 
+    int get_id() const { return block_order_id_; }
+    void set_id(int id) { block_order_id_ = id; }
   private:
     OpID op_id_;
     BasicBlock *parent_;
+    int block_order_id_;
 };
 
 template <typename Inst> class BaseInst : public Instruction {
@@ -144,6 +174,16 @@ class IBinaryInst : public BaseInst<IBinaryInst> {
     static IBinaryInst *create_sdiv(Value *v1, Value *v2, BasicBlock *bb);
     static IBinaryInst *create_srem(Value *v1, Value *v2, BasicBlock *bb);
     
+    static IBinaryInst *create_mul64(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_lshr64(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_ashr64(Value *v1, Value *v2, BasicBlock *bb);
+    
+    static IBinaryInst *create_and(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_or(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_xor(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_shl(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_lshr(Value *v1, Value *v2, BasicBlock *bb);
+    static IBinaryInst *create_ashr(Value *v1, Value *v2, BasicBlock *bb);
     virtual std::string print() override;
 };
 
@@ -175,7 +215,7 @@ class ICmpInst : public BaseInst<ICmpInst> {
     static ICmpInst *create_lt(Value *v1, Value *v2, BasicBlock *bb);
     static ICmpInst *create_eq(Value *v1, Value *v2, BasicBlock *bb);
     static ICmpInst *create_ne(Value *v1, Value *v2, BasicBlock *bb);
-
+  
     virtual std::string print() override;
 };
 

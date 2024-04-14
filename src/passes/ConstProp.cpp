@@ -74,15 +74,15 @@ void ConstProp::run() {
         if(func->get_num_basic_blocks() == 0)
             continue;
         dom.create_reverse_post_order(func);
-         LOG_INFO << module_->print();
+      //   LOG_INFO << module_->print();
        // for(auto &bb : dom.get_reverse_post_order())
         //{
         //    LOG_DEBUG << "const fold bb: " << bb->get_name();
         //}
-        LOG_DEBUG << "const fold " << func->get_name();
+     //   LOG_DEBUG << "const fold " << func->get_name();
         for(auto &bb : dom.get_reverse_post_order())
         {
-            LOG_DEBUG << "const fold bb: " << bb->get_name();
+         //   LOG_DEBUG << "const fold bb: " << bb->get_name();
             const_fold(bb);
         }
         for(auto &bb : dom.get_reverse_post_order())
@@ -90,14 +90,14 @@ void ConstProp::run() {
             dead_blocks.insert(bb);
         }
         find_dead_block(func,func->get_entry_block());
-        LOG_DEBUG << "dead_blocks size: " << dead_blocks.size();
+     //   LOG_DEBUG << "dead_blocks size: " << dead_blocks.size();
         for(auto &bb : dead_blocks)
         {
-            LOG_DEBUG << "dead_blocks: " << bb->get_name();
+         //   LOG_DEBUG << "dead_blocks: " << bb->get_name();
         }
-        LOG_INFO << module_->print();
+       // LOG_INFO << module_->print();
         clear_dead_block(func);
-        LOG_DEBUG << "remove single phi";
+     //   LOG_DEBUG << "remove single phi";
         remove_single_phi(func);
     }
 }
@@ -140,7 +140,7 @@ void ConstProp::find_dead_block(Function *func,BasicBlock *bb)
     {
         if(dead_blocks.find(sucbb) != dead_blocks.end())
         {
-            LOG_DEBUG << bb->get_name() << "find not dead block: " << sucbb->get_name();
+          //  LOG_DEBUG << bb->get_name() << "find not dead block: " << sucbb->get_name();
             find_dead_block(func,sucbb);
         }
     }
@@ -148,7 +148,7 @@ void ConstProp::find_dead_block(Function *func,BasicBlock *bb)
 
 void ConstProp::clear_dead_block(Function *func)
 {
-    LOG_DEBUG << dead_blocks.size() << "  blocks";
+  //  LOG_DEBUG << dead_blocks.size() << "  blocks";
     for(auto &bb : func->get_basic_blocks())
     {
         for(auto &inst : bb.get_instructions())
@@ -179,12 +179,12 @@ void ConstProp::clear_dead_block(Function *func)
     for(auto bb:dead_blocks)  
     {
         std::set<Instruction *> dead_inst;
-        LOG_DEBUG << "clear dead block1111 " << bb->get_name();
+     //   LOG_DEBUG << "clear dead block1111 " << bb->get_name();
         for(auto &inst:bb->get_instructions())
         {
             dead_inst.insert(&inst);
         }
-        LOG_DEBUG << "finish insert";
+      //  LOG_DEBUG << "finish insert";
         for(auto &inst:dead_inst)
         {
             bb->erase_instr(inst);
@@ -193,7 +193,7 @@ void ConstProp::clear_dead_block(Function *func)
     for(auto bb:dead_blocks)
     {
         func->remove(bb);
-        LOG_DEBUG << func->get_num_basic_blocks() << " 1234" << bb->get_name();
+       // LOG_DEBUG << func->get_num_basic_blocks() << " 1234" << bb->get_name();
     }
 }
 
@@ -236,7 +236,7 @@ void ConstProp::const_fold(BasicBlock *bb)
         }
         else if(inst.is_call())
         {
-            LOG_DEBUG << ("=====call=====") << inst.print();
+          //  LOG_DEBUG << ("=====call=====") << inst.print();
             for(auto i = 1;i < inst.get_num_operand();i++)
             {
                 auto op = inst.get_operand(i);
@@ -248,14 +248,14 @@ void ConstProp::const_fold(BasicBlock *bb)
                 auto it = array_map.find(op);
                 if(it != array_map.end())
                 {
-                    LOG_DEBUG << "erase map";
+                  //  LOG_DEBUG << "erase map";
                     array_map.erase(it);
                 }
             }
         }
         else if(inst.is_store())
         {
-            LOG_DEBUG << ("=====store=====");
+         //   LOG_DEBUG << ("=====store=====");
             auto store_inst = dynamic_cast<StoreInst *>(&inst);
             auto lval = store_inst->get_lval();
             auto rval = store_inst->get_rval();
@@ -264,7 +264,7 @@ void ConstProp::const_fold(BasicBlock *bb)
             if(gep)
             {
                 lval = gep->get_operand(0);
-                LOG_DEBUG << "gep: " << gep->print();
+              //  LOG_DEBUG << "gep: " << gep->print();
                 if(gep->get_num_operand() == 2)
                 {
                     offset = gep->get_operand(1);
@@ -275,7 +275,7 @@ void ConstProp::const_fold(BasicBlock *bb)
                 }
                 if(array_map.find(lval) == array_map.end())
                 {
-                    LOG_DEBUG << "create new map";
+                 //   LOG_DEBUG << "create new map";
                     auto map = new std::map<Value*, Value*>;
                     map->insert(std::make_pair(offset,rval));
                     array_map.insert(std::make_pair(lval,map));
@@ -292,7 +292,7 @@ void ConstProp::const_fold(BasicBlock *bb)
         }
         else if(inst.is_load())
         {
-            LOG_DEBUG << ("=====load=====");
+         //   LOG_DEBUG << ("=====load=====");
             auto lval = dynamic_cast<LoadInst *>(&inst)->get_lval();
             auto gv = dynamic_cast<GlobalVariable *>(lval);
             auto gep = dynamic_cast<GetElementPtrInst *>(lval);
@@ -330,7 +330,7 @@ void ConstProp::const_fold(BasicBlock *bb)
         }
         else if(inst.isBinary() || inst.is_cmp()|| inst.is_fcmp())
         {
-            LOG_DEBUG << ("=====binary || cmp || fcmp=====");
+         //   LOG_DEBUG << ("=====binary || cmp || fcmp=====");
             auto op1 = inst.get_operand(0);
             auto op2 = inst.get_operand(1);
             auto const_op1 = dynamic_cast<Constant *>(op1);
@@ -342,14 +342,14 @@ void ConstProp::const_fold(BasicBlock *bb)
                 if(new_val)
                 {
                     inst.replace_all_use_with(new_val);
-                    LOG_DEBUG << "const fold inst: " << inst.print();
+               //     LOG_DEBUG << "const fold inst: " << inst.print();
                     dead_inst.insert(&inst);
                 }
             }
         }
         else if(inst.is_fp2si() || inst.is_si2fp() || inst.is_zext())
         {
-            LOG_DEBUG << ("=====fp2si || si2fp || zext=====");
+        //    LOG_DEBUG << ("=====fp2si || si2fp || zext=====");
             auto op = inst.get_operand(0);
             auto const_op = dynamic_cast<Constant *>(op);
             if(const_op)
@@ -358,7 +358,7 @@ void ConstProp::const_fold(BasicBlock *bb)
                 auto new_val = folder.compute(&inst, const_op);
                 if(new_val)
                 {
-                    LOG_DEBUG << "const fold inst: " << inst.print();
+          //          LOG_DEBUG << "const fold inst: " << inst.print();
                     inst.replace_all_use_with(new_val);
                     dead_inst.insert(&inst);
                 }
@@ -366,27 +366,27 @@ void ConstProp::const_fold(BasicBlock *bb)
         }
         else if(inst.is_br())
         {
-            LOG_DEBUG << ("=====br=====");
+       //     LOG_DEBUG << ("=====br=====");
             auto br_inst = dynamic_cast<BranchInst *>(&inst);
             if(br_inst->is_cond_br())
             {
-                LOG_DEBUG << ("=====cond br=====");
+              //  LOG_DEBUG << ("=====cond br=====");
                 auto truebb = dynamic_cast<BasicBlock*>(br_inst->get_operand(1));
                 auto falsebb = dynamic_cast<BasicBlock*>(br_inst->get_operand(2));
                 auto cond = br_inst->get_operand(0);
                 auto const_cond = dynamic_cast<ConstantInt *>(cond);
                 if(const_cond)
                 {
-                    LOG_DEBUG << "const fold inst: " << inst.print();
+                   // LOG_DEBUG << "const fold inst: " << inst.print();
                     falsebb->remove_pre_basic_block(bb);
                     truebb->remove_pre_basic_block(bb);
                     bb->remove_succ_basic_block(falsebb);
                     bb->remove_succ_basic_block(truebb);
-                    LOG_DEBUG << const_cond->get_value() << " cond value";
+                 //   LOG_DEBUG << const_cond->get_value() << " cond value";
                     if(const_cond->get_value() == 1)
                     {
                       //  dead_inst.insert(&inst);
-                        LOG_DEBUG << "const fold to TRUEBB ";
+                      //  LOG_DEBUG << "const fold to TRUEBB ";
                       //  bb->erase_instr(&inst);
                        // auto new_br = BranchInst::create_br(truebb, bb);
                         br_replace.insert(std::make_pair(&inst,truebb));
@@ -411,13 +411,13 @@ void ConstProp::const_fold(BasicBlock *bb)
                     else
                     {
                       //  dead_inst.insert(&inst);
-                        LOG_DEBUG << "const fold to FALSEBB ";
+                       // LOG_DEBUG << "const fold to FALSEBB ";
                        // bb->erase_instr(&inst);
                         //auto new_br = BranchInst::create_br(falsebb, bb);
-                        LOG_DEBUG << "finish create";
+                     //   LOG_DEBUG << "finish create";
                         //bb->replace_instruction(&inst, new_br);
                       //  bb->add_instruction(new_br);
-                        LOG_DEBUG << "finish replace";
+                   //     LOG_DEBUG << "finish replace";
                         br_replace.insert(std::make_pair(&inst,falsebb));
                         for(auto &inst : truebb->get_instructions())
                         {
@@ -439,15 +439,15 @@ void ConstProp::const_fold(BasicBlock *bb)
             }
         } 
     }
-    LOG_DEBUG << "br_replace size: " << br_replace.size();
+   // LOG_DEBUG << "br_replace size: " << br_replace.size();
     for(auto &br : br_replace)
     {
-        LOG_DEBUG << "br_replace inst: " << br.first->print();
+       // LOG_DEBUG << "br_replace inst: " << br.first->print();
         bb->erase_instr(br.first);
         auto new_br = BranchInst::create_br(br.second, bb);
        // bb->add_instruction(new_br);
     }
-    LOG_DEBUG << "dead_inst size: " << dead_inst.size();
+   // LOG_DEBUG << "dead_inst size: " << dead_inst.size();
    // for(auto &inst : dead_inst)
   //  {
    //     bb->erase_instr(inst);

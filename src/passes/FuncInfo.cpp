@@ -3,12 +3,16 @@
 #include "logging.hpp"
 
 void FuncInfo::run() {
-    LOG_DEBUG << "FuncInfo: run";
+    //LOG_DEBUG << "FuncInfo: run";
     for (auto &f : m_->get_functions()) {
         auto func = &f;
         trivial_mark(func);
+        //LOG_DEBUG << "FuncInfo: trivial mark " << func->get_name();
         if (not is_pure[func])
+        {
+           // LOG_DEBUG << "FuncInfo: push back " << func->get_name();
             worklist.push_back(func);
+        }
     }
     while (worklist.empty() == false) {
         auto now = worklist.front();
@@ -51,6 +55,7 @@ void FuncInfo::trivial_mark(Function *func) {
 }
 
 void FuncInfo::process(Function *func) {
+    LOG_DEBUG << "FuncInfo: process " << func->get_name() << " " << func->get_use_list().size() << " " << func->get_basic_blocks().size();
     for (auto &use : func->get_use_list()) {
         LOG_INFO << use.val_->print() << " uses func: " << func->get_name();
         if (auto inst = dynamic_cast<Instruction *>(use.val_)) {

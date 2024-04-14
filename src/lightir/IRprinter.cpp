@@ -1,5 +1,7 @@
 #include "IRprinter.hpp"
 #include "Instruction.hpp"
+#include "Value.hpp"
+#include "logging.hpp"
 #include <cassert>
 #include <type_traits>
 
@@ -15,6 +17,7 @@ std::string print_as_op(Value *v, bool print_ty) {
     } else if (dynamic_cast<Function *>(v)) {
         op_ir += "@" + v->get_name();
     } else if (dynamic_cast<Constant *>(v)) {
+      //  LOG_DEBUG << "print_as_op: " << v->get_name() << "\n";
         op_ir += v->print();
     } else {
         op_ir += "%" + v->get_name();
@@ -89,6 +92,24 @@ std::string print_instr_op_name(Instruction::OpID id) {
         return "fptosi";
     case Instruction::sitofp:
         return "sitofp";
+    case Instruction::lshr:
+        return "lshr";
+    case Instruction::ashr:
+        return "ashr";
+    case Instruction::ashr64:
+        return "ashr";
+    case Instruction::lshr64:
+        return "lshr";
+    case Instruction::mul64:
+        return "mul";  
+    case Instruction::land:
+        return "and";
+    case Instruction::lor:
+        return "or";
+    case Instruction::lxor:
+        return "xor";
+    case Instruction::shl:
+        return "shl";
     }
     assert(false && "Must be bug");
 }
@@ -111,7 +132,47 @@ template <class BinInst> std::string print_binary_inst(const BinInst &inst) {
     }
     return instr_ir;
 }
-std::string IBinaryInst::print() { return print_binary_inst(*this); }
+
+std::string IBinaryInst::print() { 
+    if(!this->is_mul64() && !this->is_lshr64() && !this->is_ashr64())
+        return print_binary_inst(*this); 
+    else {
+        std::string instr_ir;
+        if(this->is_mul64() && this->get_parent()->get_parent()->has_mul.find(this->get_operand(0)) == this->get_parent()->get_parent()->has_mul.end())
+        {
+            instr_ir += "%";
+            instr_ir += this->get_operand(0)->get_name() + "_64" " = "+"sext i32 %" + this->get_operand(0)->get_name() + " to i64\n ";
+            this->get_parent()->get_parent()->has_mul.insert(this->get_operand(0));
+           // LOG_DEBUG << "has_mul: " << this->get_operand(0)->get_name();
+        }    
+        instr_ir += "%";
+        instr_ir += this->get_name();
+        instr_ir += "_64";
+        instr_ir += " = ";
+        
+        std::string op_name = this->get_instr_op_name();
+        instr_ir += op_name;
+        instr_ir += " ";
+        instr_ir += "i64";
+        instr_ir += " ";
+        instr_ir += print_as_op(this->get_operand(0), false);
+        instr_ir += "_64";
+        instr_ir += ", ";
+        //instr_ir += "i64";
+        instr_ir += " ";
+        instr_ir += print_as_op(this->get_operand(1), false);
+        if(this->is_lshr64() || this->is_ashr64())
+        {
+            instr_ir += "\n";
+            instr_ir += "%";
+            instr_ir += this->get_name();
+            instr_ir += " = trunc i64 %";
+            instr_ir += this->get_name();
+            instr_ir += "_64 to i32";
+        }
+        return instr_ir;
+    }
+}
 std::string FBinaryInst::print() { return print_binary_inst(*this); }
 
 template <class CMP> std::string print_cmp_inst(const CMP &inst) {

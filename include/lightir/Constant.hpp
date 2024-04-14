@@ -1,8 +1,10 @@
 #pragma once
 
+
 #include "Type.hpp"
 #include "User.hpp"
 #include "Value.hpp"
+#include <cstdint>
 
 class Constant : public User {
   private:
@@ -14,12 +16,13 @@ class Constant : public User {
 
 class ConstantInt : public Constant {
   private:
-    int value_;
-    ConstantInt(Type *ty, int val) : Constant(ty, ""), value_(val) {}
+    int64_t value_;
+    ConstantInt(Type *ty, int64_t val) : Constant(ty, ""), value_(val) {}
 
   public:
-    int get_value() { return value_; }
+    int64_t get_value() { return value_; }
     static ConstantInt *get(int val, Module *m);
+    static ConstantInt *get(int64_t val, Module *m);
     static ConstantInt *get(bool val, Module *m);
     virtual std::string print() override;
 };
@@ -62,3 +65,4 @@ class ConstantFP : public Constant {
     float get_value() { return val_; }
     virtual std::string print() override;
 };
+

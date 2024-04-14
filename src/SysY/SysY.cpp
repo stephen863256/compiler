@@ -16,6 +16,10 @@
 #include <string>
 #include "LoopFind.hpp"
 #include "LoopInvariant.hpp"
+#include "LoopUnrolling.hpp"
+#include "StrengthReduction.hpp"
+#include "InstCombine.hpp"
+#include "RegAlloc.hpp"
 using std::string;
 using std::operator""s;
 
@@ -59,34 +63,50 @@ int main(int argc, char **argv) {
         m = builder.getModule();
     }
 
-    LOG_DEBUG << m->print();
+    
+    
     PassManager PM(m.get());
 
     if (config.mem2reg) {
         //PM.add_pass<ConstProp>();
         PM.add_pass<Mem2Reg>();
-        LOG_DEBUG << "mem2regssjdjddldldld";
+      //  LOG_DEBUG << "mem2regssjdjddldldld";
         PM.add_pass<DeadCode>();
        // PM.add_pass<LoopFind>();
         PM.add_pass<LocalCommonSubExpr>();
         PM.add_pass<ConstProp>();
         PM.add_pass<FunctionInline>();
         PM.add_pass<DeadCode>();
+        PM.add_pass<LocalCommonSubExpr>();
         PM.add_pass<UnconditionalBr>();
+        //PM.add_pass<LocalCommonSubExpr>();
+        //PM.add_pass<InstCombine>();
+        //PM.add_pass<DeadCode>();
         PM.add_pass<LoopInvariant>();
+        PM.add_pass<LoopUnrolling>();
+        PM.add_pass<ConstProp>();
+        PM.add_pass<DeadCode>();
+        PM.add_pass<LocalCommonSubExpr>();
+        PM.add_pass<InstCombine>();
+        PM.add_pass<DeadCode>();
+        PM.add_pass<StrengthReduction>();
         //PM.add_pass<LoopFind>();
        // PM.add_pass<LocalCommonSubExpr>();
         PM.add_pass<DeadCode>();
         PM.add_pass<UnconditionalBr>();
-        PM.add_pass<ConstProp>();
         PM.add_pass<DeadCode>();
-        PM.add_pass<UnconditionalBr>();
     }
    // if(config.gvn){
    //     PM.add_pass<GVN>(config.dumpjson);
    // }
   
     PM.run();
+
+   // auto active_var = std::make_shared<ActiveVar>(m.get());
+    //active_var->run();
+
+    //auto regalloc = std::make_shared<RegAllocDriver>(m.get());
+    //regalloc->compute_reg_alloc();
    //  LOG_INFO << m->print();
     std::ofstream output_stream(config.output_file);
     if (config.emitllvm) {
@@ -94,6 +114,7 @@ int main(int argc, char **argv) {
         output_stream << "; ModuleID = 'SysY'\n";
         output_stream << "source_filename = " << abs_path << "\n\n";
         output_stream << m->print();
+       // LOG_DEBUG << "finish output llvm ir to " << config.output_file << "\n";
     } else if (config.emitasm) {
         CodeGen codegen(m.get());
         codegen.run();

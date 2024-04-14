@@ -1,5 +1,6 @@
 #include "Constant.hpp"
 #include "Module.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 #include <memory>
@@ -19,6 +20,9 @@ struct pair_hash {
 static std::unordered_map<std::pair<int, Module *>,
                           std::unique_ptr<ConstantInt>, pair_hash>
     cached_int;
+static std::unordered_map<std::pair<int64_t, Module *>,
+                        std::unique_ptr<ConstantInt>, pair_hash>
+    cached_int64;
 static std::unordered_map<std::pair<bool, Module *>,
                           std::unique_ptr<ConstantInt>, pair_hash>
     cached_bool;
@@ -33,6 +37,15 @@ ConstantInt *ConstantInt::get(int val, Module *m) {
     return (cached_int[std::make_pair(val, m)] = std::unique_ptr<ConstantInt>(
                 new ConstantInt(m->get_int32_type(), val)))
         .get();
+}
+ConstantInt *ConstantInt::get(int64_t val, Module *m) {
+    if (cached_int64.find(std::make_pair(val, m)) != cached_int64.end())
+        return cached_int64[std::make_pair(val, m)].get();
+      //  LOG_DEBUG << "val 1:" << val;
+    return (cached_int64[std::make_pair(val, m)] = std::unique_ptr<ConstantInt>(
+                new ConstantInt(m->get_int32_type(), val)))
+        .get();
+
 }
 ConstantInt *ConstantInt::get(bool val, Module *m) {
     if (cached_bool.find(std::make_pair(val, m)) != cached_bool.end())
@@ -50,6 +63,7 @@ std::string ConstantInt::print() {
         const_ir += (this->get_value() == 0) ? "false" : "true";
     } else {
         // int32
+        //LOG_DEBUG << "ConstantInt::print()" << this->get_value() ;
         const_ir += std::to_string(this->get_value());
     }
     return const_ir;

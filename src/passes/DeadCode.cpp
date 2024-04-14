@@ -4,7 +4,7 @@
 // 处理流程：两趟处理，mark 标记有用变量，sweep 删除无用指令
 void DeadCode::run() {
     bool changed{};
-    LOG_DEBUG << "DeadCode: run";
+   // LOG_DEBUG << "DeadCode: run";
     func_info->run();
     do {
         changed = false;
@@ -15,6 +15,7 @@ void DeadCode::run() {
         }
     } while (changed);
     LOG_INFO << "dead code pass erased " << ins_count << " instructions";
+    LOG_INFO << m_->print();
 }
 
 void DeadCode::mark(Function *func) {

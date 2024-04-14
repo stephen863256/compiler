@@ -10,7 +10,7 @@
 #include "DeadCode.hpp"
 
 void FunctionInline::run() {
-    LOG_DEBUG << "FunctionInline run";
+   // LOG_DEBUG << "FunctionInline run";
     inline_func_find();
     for(auto &call : call_list) {
         auto instr = call.first;
@@ -19,7 +19,7 @@ void FunctionInline::run() {
         //LOG_DEBUG << "Instruction: " + instr->print();
     }
     inline_func();
-    LOG_INFO << module_->print();
+   // LOG_INFO << module_->print();
   //  std::shared_ptr<DeadCode> dead_code = std::make_shared<DeadCode>(module_);
    // dead_code->run();
 }
@@ -37,9 +37,9 @@ void FunctionInline::inline_func_find() {
         for(auto &bb : func->get_basic_blocks()) {
             num += bb.get_instructions().size();
         }
-        if(num > MAX_INLINE) {
-            continue;
-        }
+        //if(num > MAX_INLINE) {
+       //     continue;
+     //   }
         if(func->get_num_basic_blocks() > 1) {
             continue;
         }
@@ -67,13 +67,13 @@ void FunctionInline::inline_func() {
     for(auto &call : call_list) 
     {
         call_inst_map.clear();
-        LOG_DEBUG << "Inline function: " + call.second->get_name();
-        LOG_DEBUG << "Instruction: " + call.first->print();
+       // LOG_DEBUG << "Inline function: " + call.second->get_name();
+       // LOG_DEBUG << "Instruction: " + call.first->print();
         auto instr = call.first;
         auto func = call.second;
         auto bb = instr->get_parent();
-        LOG_DEBUG << bb->get_parent()->get_name();
-        LOG_DEBUG <<"bbbbbbbbbbbbbbbbbbbbbbbbbbssdddsd\n" << bb->print();
+       // LOG_DEBUG << bb->get_parent()->get_name();
+      //  LOG_DEBUG <<"bbbbbbbbbbbbbbbbbbbbbbbbbbssdddsd\n" << bb->print();
         int idx = 1;
         for(auto &args:func->get_args())
         {
@@ -294,7 +294,7 @@ void FunctionInline::inline_func() {
                 else if(inst.is_alloca())
                 {
                     auto alloca = dynamic_cast<AllocaInst *>(&inst);
-                    auto new_alloca = AllocaInst::create_alloca(alloca->get_type(),bb);
+                    auto new_alloca = AllocaInst::create_alloca(alloca->get_type()->get_pointer_element_type(),bb);
                     bb->insert_instruction(current_inst,new_alloca);
                     current_inst = new_alloca;
                 }

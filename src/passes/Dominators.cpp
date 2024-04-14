@@ -12,8 +12,8 @@ void Dominators::run() {
         auto f = &f1;
         if (f->get_basic_blocks().size() == 0)
             continue;
-        LOG_DEBUG << "Dominators: run " << f->get_name();
-         LOG_DEBUG << f->get_name() << " " << f->get_basic_blocks().size();
+       // LOG_DEBUG << "Dominators: run " << f->get_name();
+       //  LOG_DEBUG << f->get_name() << " " << f->get_basic_blocks().size();
         for(auto &bb1 : f->get_basic_blocks())
         {
             const_prop->set_dead_block(&bb1);
@@ -21,8 +21,8 @@ void Dominators::run() {
         const_prop->find_dead_block(f,f->get_entry_block());
         const_prop->clear_dead_block(f);
         const_prop->clear_dead_block();
-        LOG_DEBUG << f->print();
-        LOG_DEBUG << f->get_name() << " " << f->get_basic_blocks().size();
+       // LOG_DEBUG << f->print();
+      //  LOG_DEBUG << f->get_name() << " " << f->get_basic_blocks().size();
         for (auto &bb1 : f->get_basic_blocks()) {
             auto bb = &bb1;
             idom_.insert({bb, {}});
@@ -30,18 +30,18 @@ void Dominators::run() {
             dom_tree_succ_blocks_.insert({bb, {}});
         }
         
-        LOG_DEBUG << "Dominators: create_reverse_post_order" ;
+      //  LOG_DEBUG << "Dominators: create_reverse_post_order" ;
         create_reverse_post_order(f);
-        LOG_DEBUG << "Dominators: create_idom" ;
+       // LOG_DEBUG << "Dominators: create_idom" ;
         create_idom(f);
       //  for(auto &bb1 : f->get_basic_blocks())
        // {
      //       auto bb = &bb1;
      //       LOG_DEBUG << "Dominators: create_idom " << bb->get_name() << " " << get_idom(bb)->get_name();
      //  }
-        LOG_DEBUG << "Dominators: create_dominance_frontier" ;
+       // LOG_DEBUG << "Dominators: create_dominance_frontier" ;
         create_dominance_frontier(f);
-        LOG_DEBUG << "Dominators: create_dom_tree_succ" ;
+        //LOG_DEBUG << "Dominators: create_dom_tree_succ" ;
         create_dom_tree_succ(f);
     }
 }
@@ -131,7 +131,7 @@ void Dominators::create_dominance_frontier(Function *f) {
                 auto runner = pre_bb1;
                 while(runner != get_idom(bb))
                 {
-                    LOG_DEBUG << "Dominators: create_dominance_frontier " << runner->get_name() << " " << bb->get_name();
+                  //  LOG_DEBUG << "Dominators: create_dominance_frontier " << runner->get_name() << " " << bb->get_name();
                     dom_frontier_[runner].insert(bb);
                     runner = get_idom(runner);
                 }

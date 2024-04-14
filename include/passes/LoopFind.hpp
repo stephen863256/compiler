@@ -12,10 +12,12 @@ class LoopFind : public Pass {
         LoopFind(Module *m) : Pass(m) {module_ = m;}
         void run() override;
         void loop_find(Function *func);
+        void indgree_calculate(Function *func);
+        void indgree_calculate(BasicBlock *bb);
         void tarjan(BasicBlock *bb);
 
         BasicBlock* get_loop_entry(Loop* loop){return *(*loop).rbegin();}
-    
+        BasicBlock* get_loop_exit(Loop* loop){return *(*loop).begin();}
         //& Loopinvariant
         std::vector<Loop *>* get_loops() { return &loops; }
         Loop* get_bb_loop(BasicBlock* BB){return bb_loop[BB];}

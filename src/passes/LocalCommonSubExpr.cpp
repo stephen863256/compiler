@@ -10,7 +10,7 @@ void LocalCommonSubExpr::run() {
     dominator = std::make_unique<Dominators>(module_);
     dominator->run();
     get_eliminatable_call();
-    LOG_DEBUG << "LocalCommonSubExpr start" ;
+   // LOG_DEBUG << "LocalCommonSubExpr start" ;
     //LOG_INFO << module_->print();
     //LOG_INFO << module_->get_functions().size() << " functions in module";
     for(auto &func : module_->get_functions()) {
@@ -30,13 +30,13 @@ void LocalCommonSubExpr::run() {
         load_expr.clear();
         //load_expr_const.clear();
         call_expr.clear();
-        LOG_DEBUG << "LocalCommonSubExpr start in " << func.get_name() <<"\n" <<func.print();
+       // LOG_DEBUG << "LocalCommonSubExpr start in " << func.get_name() <<"\n" <<func.print();
         for(auto &bb : func.get_basic_blocks()) {
             if(visited.find(&bb) == visited.end()) {
                 find_common_subexpr(&bb);
             }
         }
-         LOG_DEBUG << "LocalCommonSubExpr end in " << func.get_name() <<"\n" <<func.print();
+       //  LOG_DEBUG << "LocalCommonSubExpr end in " << func.get_name() <<"\n" <<func.print();
     }
 }
 
@@ -69,12 +69,12 @@ inline bool LocalCommonSubExpr::is_eliminatable_call(Function *func) {
 }
 
 void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
-    LOG_DEBUG << "find common subexpr in " << bb->get_name();
+    //LOG_DEBUG << "find common subexpr in " << bb->get_name();
     if(bb != func_->get_entry_block()){
         auto idom_bb = dominator->get_idom(bb);
         if(idom_bb != nullptr)
         {
-        LOG_DEBUG << "idom is " << idom_bb->get_name();
+       // LOG_DEBUG << "idom is " << idom_bb->get_name();
         if(visited.find(idom_bb) == visited.end()) {
             find_common_subexpr(idom_bb);
         }
@@ -184,11 +184,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = gep2_expr_const[bb].find({ptr,idx_const->get_value()});
                         if(iter != gep2_expr_const[bb].end())
                         {
-                            LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                         //   LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(iter->second);
                         }
                         else {
-                             LOG_DEBUG << "const find gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                          //   LOG_DEBUG << "const find gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             gep2_expr_const[bb].insert({{ptr,idx_const->get_value()},&inst});
                         }
                     }
@@ -197,11 +197,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = gep2_expr[bb].find({ptr,idx});
                         if(iter != gep2_expr[bb].end())
                         {
-                             LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                            // LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(iter->second);
                         }
                         else {
-                             LOG_DEBUG << "find gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                           //  LOG_DEBUG << "find gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             gep2_expr[bb].insert({{ptr,idx},&inst});
                         }
                     }
@@ -216,11 +216,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = gep3_expr_const[bb].find({ptr,idx_const->get_value()});
                         if(iter != gep3_expr_const[bb].end())
                         {
-                             LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                           //  LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(iter->second);
                         }
                         else {
-                            LOG_DEBUG << " const find gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                           // LOG_DEBUG << " const find gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             gep3_expr_const[bb].insert({{ptr,idx_const->get_value()},&inst});
                         }
                     }
@@ -229,11 +229,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = gep3_expr[bb].find({ptr,idx});
                         if(iter != gep3_expr[bb].end())
                         {
-                             LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                           //  LOG_DEBUG << "erase  gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(iter->second);
                         }
                         else {
-                             LOG_DEBUG << "find gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                            // LOG_DEBUG << "find gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             gep3_expr[bb].insert({{ptr,idx},&inst});
                         }
                     }
@@ -256,11 +256,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = load_gep_expr_const[bb].find({gep});
                         if(iter != load_gep_expr_const[bb].end() && std::get<0>(iter->second) == idx_const->get_value())
                         {
-                            LOG_DEBUG << "erase  load const in " << bb->get_name() << "\n\n" << inst.print() ;
+                           // LOG_DEBUG << "erase  load const in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(std::get<1>(iter->second));
                         }
                         else {
-                            LOG_DEBUG << "const find load const in " << bb->get_name() << "\n\n" << inst.print() ;
+                          //  LOG_DEBUG << "const find load const in " << bb->get_name() << "\n\n" << inst.print() ;
                             load_gep_expr_const[bb].insert({gep->get_operand(0),{idx_const->get_value(),&inst}});
                         }
                     }
@@ -269,11 +269,11 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         auto iter = load_gep_expr[bb].find(gep);
                         if(iter != load_gep_expr[bb].end() && std::get<0>(iter->second) == idx)
                         {
-                            LOG_DEBUG << "erase  load gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                          //  LOG_DEBUG << "erase  load gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             inst.replace_all_use_with(std::get<1>(iter->second));
                         }
                         else {
-                            LOG_DEBUG << "find load gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                          //  LOG_DEBUG << "find load gep in " << bb->get_name() << "\n\n" << inst.print() ;
                             load_gep_expr[bb].insert({gep->get_operand(0),{idx,&inst}});
                         }
                     }
@@ -283,14 +283,14 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                 auto iter = load_expr[bb].find(ptr);
                 if(iter != load_expr[bb].end())
                 {
-                    LOG_DEBUG << "erase  2load in " << bb->get_name() << "\n\n" << inst.print() ;
+                   // LOG_DEBUG << "erase  2load in " << bb->get_name() << "\n\n" << inst.print() ;
                     inst.replace_all_use_with(iter->second);
                 }
                 else 
                 {
-                    LOG_DEBUG << "find 2load in " << bb->get_name() << "\n\n" << inst.print() ;
+                  //  LOG_DEBUG << "find 2load in " << bb->get_name() << "\n\n" << inst.print() ;
                     load_expr[bb].insert({ptr,&inst});
-                    LOG_DEBUG << "find 2load2 in " << bb->get_name() << "\n\n" << inst.print() ;
+                //    LOG_DEBUG << "find 2load2 in " << bb->get_name() << "\n\n" << inst.print() ;
                 }
             }
         }
@@ -311,7 +311,7 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                     auto iter = load_gep_expr_const[bb].find({gep->get_operand(0)});
                     if(iter != load_gep_expr_const[bb].end() && std::get<0>(iter->second) == idx_const->get_value())
                     {
-                        LOG_DEBUG << "store erase  load const in " << bb->get_name() << "\n\n" << inst.print() ;
+                      //  LOG_DEBUG << "store erase  load const in " << bb->get_name() << "\n\n" << inst.print() ;
                         load_gep_expr_const[bb].erase(iter);
                     }
                     auto idom_bb = dominator->get_idom(bb);
@@ -326,7 +326,7 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                     auto iter = load_gep_expr[bb].find(gep->get_operand(0));
                     if(iter != load_gep_expr[bb].end() && std::get<0>(iter->second) == idx)
                     {
-                        LOG_DEBUG << "store erase  load gep in " << bb->get_name() << "\n\n" << inst.print() ;
+                      //  LOG_DEBUG << "store erase  load gep in " << bb->get_name() << "\n\n" << inst.print() ;
                         load_gep_expr[bb].erase(iter);
                     }
                     auto idom_bb = dominator->get_idom(bb);
@@ -342,14 +342,14 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
             auto iter = load_expr[bb].find(ptr);
             if(iter != load_expr[bb].end())
             {
-                LOG_DEBUG << "store erase  load in " << bb->get_name() << "\n\n" << inst.print() <<"\n\n" << iter->second->print();
+              //  LOG_DEBUG << "store erase  load in " << bb->get_name() << "\n\n" << inst.print() <<"\n\n" << iter->second->print();
                 load_expr[bb].erase(iter);  
             }
             auto idom_bb = dominator->get_idom(bb);
             auto iter2 = load_expr[idom_bb].find(ptr);
             if(iter2 != load_expr[idom_bb].end())
             {
-                LOG_DEBUG << "store1111 erase  load in " << idom_bb->get_name() << "\n\n" << inst.print() ;
+              //  LOG_DEBUG << "store1111 erase  load in " << idom_bb->get_name() << "\n\n" << inst.print() ;
                 load_expr[idom_bb].erase(iter2);
             }
         }
@@ -377,14 +377,14 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
             if(call_func->is_declaration()) continue;
             for(auto &arg : args)
             {
-                LOG_DEBUG << "call find load in " <<call_func->get_name() << "\n\n" << inst.print() ;
+               // LOG_DEBUG << "call find load in " <<call_func->get_name() << "\n\n" << inst.print() ;
                 auto gep = dynamic_cast<GetElementPtrInst *>(arg);
                 if(gep == nullptr) continue;
-                LOG_DEBUG << arg->print();
+               // LOG_DEBUG << arg->print();
                 auto iter = load_gep_expr[bb].find(gep->get_operand(0));
                 if(iter != load_gep_expr[bb].end())
                 {
-                    LOG_DEBUG << "erase  load in " << bb->get_name() << "\n\n" << inst.print() ;
+                //    LOG_DEBUG << "erase  load in " << bb->get_name() << "\n\n" << inst.print() ;
                     load_gep_expr[bb].erase(iter);
                 }
                 auto idom_bb = dominator->get_idom(bb);
@@ -396,7 +396,7 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                 auto iter3 = load_gep_expr_const[bb].find({gep->get_operand(0)});
                 if(iter3 != load_gep_expr_const[bb].end())
                 {
-                    LOG_DEBUG << "erase  load const in " << bb->get_name() << "\n\n" << std::get<1>(iter3->second)->print() ;
+                    //LOG_DEBUG << "erase  load const in " << bb->get_name() << "\n\n" << std::get<1>(iter3->second)->print() ;
                     load_gep_expr_const[bb].erase(iter3);
                 }
                 auto iter4 = load_gep_expr_const[idom_bb].find(gep->get_operand(0));
@@ -419,12 +419,12 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                     {
                         if(inst.is_store())
                         {
-                            LOG_DEBUG << call_func->get_name() << " has store" << "  \n" << inst.print();
+                           // LOG_DEBUG << call_func->get_name() << " has store" << "  \n" << inst.print();
                             auto ptr = dynamic_cast<StoreInst *>(&inst)->get_lval();
                             auto iter = load_expr[bb].find(ptr);
                             if(iter != load_expr[bb].end())
                             {
-                                LOG_DEBUG << "erase  load     in " << bb->get_name() << "\n\n" << inst.print() ;
+                               // LOG_DEBUG << "erase  load     in " << bb->get_name() << "\n\n" << inst.print() ;
                                 load_expr[bb].erase(iter);
                             }
                             auto idom_bb = dominator->get_idom(bb);
@@ -438,7 +438,7 @@ void LocalCommonSubExpr::find_common_subexpr(BasicBlock *bb){
                         {
                             auto call_func_ = dynamic_cast<Function *>(inst.get_operand(0));
                             if(call_func != call_func_ ){
-                                LOG_DEBUG << "call stack push " << call_func_->get_name();
+                               // LOG_DEBUG << "call stack push " << call_func_->get_name();
                                 call_stack.push(call_func_);
                             }
                         }

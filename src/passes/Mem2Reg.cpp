@@ -16,7 +16,7 @@ void Mem2Reg::run() {
     // 创建支配树分析 Pass 的实例
     dominators_ = std::make_unique<Dominators>(m_);
     // 建立支配树
-    LOG_DEBUG << "dominators run";
+    //LOG_DEBUG << "dominators run";
     dominators_->run();
     // 以函数为单元遍历实现 Mem2Reg 算法
     for (auto &f : m_->get_functions()) {
@@ -26,14 +26,15 @@ void Mem2Reg::run() {
         func_ = &f;
         if (func_->get_basic_blocks().size() >= 1) {
             // 对应伪代码中 phi 指令插入的阶段
-            LOG_DEBUG << "generate_phi " << func_->get_name();
+          //  LOG_DEBUG << "generate_phi " << func_->get_name();
             generate_phi();
             // 对应伪代码中重命名阶段
-            LOG_DEBUG << "rename " << func_->get_name();
+          //  LOG_DEBUG << "rename " << func_->get_name();
             rename(func_->get_entry_block());
         }
         // 后续 DeadCode 将移除冗余的局部变量的分配空间
     }
+    LOG_DEBUG << m_->print();
 }
 
 void Mem2Reg::generate_phi() {

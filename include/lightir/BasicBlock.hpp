@@ -25,7 +25,7 @@ class BasicBlock : public Value, public llvm::ilist_node<BasicBlock> {
     /****************api about cfg****************/
     std::list<BasicBlock *> &get_pre_basic_blocks() { return pre_bbs_; }
     std::list<BasicBlock *> &get_succ_basic_blocks() { return succ_bbs_; }
-
+   
     void add_pre_basic_block(BasicBlock *bb) { pre_bbs_.push_back(bb); }
     void add_succ_basic_block(BasicBlock *bb) { succ_bbs_.push_back(bb); }
     void remove_pre_basic_block(BasicBlock *bb) { pre_bbs_.remove(bb); }
@@ -78,12 +78,34 @@ class BasicBlock : public Value, public llvm::ilist_node<BasicBlock> {
     void erase_from_parent();
     int get_loop_depth() { return loop_depth_; }
     void loop_depth_add(int i) { loop_depth_ = loop_depth_ + i; }
+    void loop_depth_reset() { loop_depth_ = 0; }
+    int get_indegree() { return indegree_; }
+    void indegree_add(int i) { indegree_ = indegree_ + i; }
+    void indegree_reset() { indegree_ = 0; }
+    bool  indegree_is_zero() { return indegree_ == 0; }
     virtual std::string print() override;
+    void set_live_in_int(std::set<Value *> live_in) { ilive_in = live_in;}
+    void set_live_out_int(std::set<Value *> live_out) { ilive_out = live_out;}
+    void set_live_in_float(std::set<Value *> live_in) { flive_in = live_in;}
+    void set_live_out_float(std::set<Value *> live_out) { flive_out = live_out;}
+    std::set<Value *> get_live_in_int() { return ilive_in;}
+    std::set<Value *> get_live_out_int() { return ilive_out;}
+    std::set<Value *> get_live_in_float() { return flive_in;}
+    std::set<Value *> get_live_out_float() { return flive_out;}
+    void set_def(std::set<Value*> def) { this->def = def;}
+    void set_use(std::set<Value*> use) { this->use = use;}
+    std::set<Value*> get_def() { return def;}
+    std::set<Value*> get_use() { return use;}
 
   private:
     BasicBlock(const BasicBlock &) = delete;
     explicit BasicBlock(Module *m, const std::string &name, Function *parent);
     int loop_depth_;
+    int indegree_;
+    std::set<Value *> flive_in, flive_out;
+    std::set<Value *> ilive_in, ilive_out;
+    std::set<Value*> def;
+    std::set<Value*> use;
     std::list<BasicBlock *> pre_bbs_;
     std::list<BasicBlock *> succ_bbs_;
     llvm::ilist<Instruction> instr_list_;

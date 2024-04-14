@@ -30,7 +30,7 @@ class Function : public Value, public llvm::ilist_node<Function> {
     Type *get_return_type() const;
 
     void add_basic_block(BasicBlock *bb);
-
+    std::set <Value *> has_mul;
     unsigned get_num_of_args() const;
     unsigned get_num_basic_blocks() const;
 

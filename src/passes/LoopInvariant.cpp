@@ -20,7 +20,7 @@ void LoopInvariant::run() {
         }
         if(is_inner_loop) {
             auto loop_ = loop;
-            LOG_DEBUG << "find inner loop  " << loop_find->get_loop_entry(loop)->get_name();
+          //  LOG_DEBUG << "find inner loop  " << loop_find->get_loop_entry(loop)->get_name();
             while(loop_ != nullptr) {
                 loop_invariant.clear();
                 find_loop_invariant(loop_);
@@ -31,8 +31,8 @@ void LoopInvariant::run() {
             }
         }
     }
-    LOG_DEBUG << "LoopInvariant done";
-    LOG_DEBUG << module_->print();
+   // LOG_DEBUG << "LoopInvariant done";
+  //  LOG_DEBUG << module_->print();
 }
 
 void LoopInvariant::find_loop_invariant(Loop *loop) {
@@ -56,7 +56,7 @@ void LoopInvariant::find_loop_invariant(Loop *loop) {
                     continue;
                 if(loop_def.find(&inst) == loop_def.end()) 
                     continue;
-                LOG_DEBUG << "check loop invariant: " << inst.print();
+             //   LOG_DEBUG << "check loop invariant: " << inst.print();
                 for(auto &op: inst.get_operands()) {
                     if(loop_def.find(op) != loop_def.end()) {
                         is_invariant = false;
@@ -122,11 +122,11 @@ void LoopInvariant::move_invariant_out(Loop *loop) {
             auto bb = dynamic_cast<BasicBlock *>(phi->get_operand(i + 1));
             auto val = phi->get_operand(i);
             if(loop_find->get_bb_loop(bb) == loop) {
-                LOG_DEBUG << "def in loop: " << val->get_name() << "   " << bb->get_name();
+             //   LOG_DEBUG << "def in loop: " << val->get_name() << "   " << bb->get_name();
                 def_in_loop.push_back(std::make_pair(val, bb));
             }
             else {
-                LOG_DEBUG << "def out loop: " << val->get_name() << "   " << bb->get_name();
+             //   LOG_DEBUG << "def out loop: " << val->get_name() << "   " << bb->get_name();
                 def_out_loop.push_back(std::make_pair(val, bb));
             }       
         }
@@ -144,22 +144,22 @@ void LoopInvariant::move_invariant_out(Loop *loop) {
         else {
             phi->remove_all_operands();
             for(auto &def: def_in_loop) {
-                LOG_DEBUG << "add phi pair operand: " << def.first->get_name() << "   " << def.second->get_name();
+             //   LOG_DEBUG << "add phi pair operand: " << def.first->get_name() << "   " << def.second->get_name();
                 phi->add_phi_pair_operand(def.first,def.second);
             }
             for(auto &def: def_out_loop) {
-                LOG_DEBUG << "add phi pair operand: " << def.first->get_name() << "   " << new_bb->get_name();
+             //   LOG_DEBUG << "add phi pair operand: " << def.first->get_name() << "   " << new_bb->get_name();
                 phi->add_phi_pair_operand(def.first,new_bb);
             }   
-            LOG_DEBUG << "phi operand size" << phi->get_num_operand();
+         //   LOG_DEBUG << "phi operand size" << phi->get_num_operand();
         }
     }
-    LOG_DEBUG << first_bb->print();
+    //LOG_DEBUG << first_bb->print();
     for(auto &invariant : loop_invariant) {
         auto bb = invariant.first;
         for(auto &inst: invariant.second) {
             bb->get_instructions().remove(inst);
-            LOG_DEBUG << "move invariant out: " << inst->get_name();
+           //LOG_DEBUG << "move invariant out: " << inst->get_name();
             new_bb->add_instruction(inst);
             inst->set_parent(new_bb);
         }
@@ -173,9 +173,9 @@ void LoopInvariant::move_invariant_out(Loop *loop) {
         }
     }
     auto new_br = BranchInst::create_br(first_bb,new_bb);
-    LOG_DEBUG << "new_bb: " << new_bb->print() << " "<< new_br->print();
+   // LOG_DEBUG << "new_bb: " << new_bb->print() << " "<< new_br->print();
     for(auto &pre_bb: pre_bbs) {
-            LOG_DEBUG << "pre_bb: " << pre_bb->get_name();
+          //  LOG_DEBUG << "pre_bb: " << pre_bb->get_name();
             auto term = pre_bb->get_terminator();
             if(term->is_br()) {
                 auto br = dynamic_cast<BranchInst *>(term);
@@ -200,14 +200,16 @@ void LoopInvariant::move_invariant_out(Loop *loop) {
                     }
                 }
                 else {
-                    LOG_DEBUG << "br: " << br->print();
+                   // LOG_DEBUG << "br: " << br->print();
                     pre_bb->get_instructions().remove(br);
                     //pre_bb->remove_succ_basic_block(first_bb);
                     //first_bb->remove_pre_basic_block(pre_bb);
                     auto new_br = BranchInst::create_br(new_bb,pre_bb);
-                    LOG_DEBUG << "new_br: " << new_br->print();
+                  // LOG_DEBUG << "new_br: " << new_br->print();
                     //pre_bb->add_instruction(new_br);
                 }
+                pre_bb->remove_succ_basic_block(first_bb);
+                first_bb->remove_pre_basic_block(pre_bb);
             }
         
     }

@@ -83,7 +83,7 @@ Type *cur_type = nullptr;
     if(node.const_array_ident == nullptr){
         node.const_init_val->accept(*this);
         auto val = context.cur_val;
-        LOG_DEBUG <<  "const_def " << node.id << " " ;
+     //   LOG_DEBUG <<  "const_def " << node.id << " " ;
         if(cur_type == INT32_T && val->get_type()->is_float_type())
         {
             val = CONST_INT((int)(dynamic_cast<ConstantFP *>(val)->get_value()));
@@ -251,7 +251,7 @@ Type *cur_type = nullptr;
         {
             if(scope.in_global())
             {
-                LOG_DEBUG << "var_def " << node.id << " ";
+              //  LOG_DEBUG << "var_def " << node.id << " ";
                 auto initializer = ConstantZero::get(cur_type,module.get());
                 auto global_var = GlobalVariable::create(node.id,module.get(),cur_type,false,initializer);
                 scope.push(node.id,global_var);
@@ -321,7 +321,7 @@ Type *cur_type = nullptr;
             }
             else
             {
-                LOG_DEBUG << "var_def " << node.id << " ";
+               // LOG_DEBUG << "var_def " << node.id << " ";
                 auto initializer = ConstantZero::get(array_type,module.get());
                 auto global_var = GlobalVariable::create(node.id,module.get(),array_type,false,initializer);
                 scope.push(node.id,global_var);
@@ -450,7 +450,7 @@ Type *cur_type = nullptr;
     }
     func_type = FunctionType::get(ret_type,param_types);
     auto func = Function::create(func_type,node.id,module.get());
-    LOG_DEBUG << "func_def " << node.id << " ";
+    //LOG_DEBUG << "func_def " << node.id << " ";
     scope.push_func(node.id,func);
     ////std::cout<< "func_def   " <<node.id<< std::endl;
     context.func = func;
@@ -721,7 +721,7 @@ Value *SysYBuilder::visit(ASTIterationStmt &node) {
 
 Value *SysYBuilder::visit(ASTReturnStmt &node){
     ////std::cout<< "return stmt" << std::endl;
-    LOG_DEBUG << "return_stmt ";
+   // LOG_DEBUG << "return_stmt ";
     if(node.exp == nullptr)
     {
         builder->create_void_ret();
@@ -1591,7 +1591,7 @@ Value *SysYBuilder::visit(ASTEqExp &node){
 
 Value *SysYBuilder::visit(ASTCall &node){
     ////std::cout<< node.id << "  call" << std::endl;
-    LOG_DEBUG << "call " << node.id;
+    //LOG_DEBUG << "call " << node.id;
     Function *fun = (Function *)scope.find_func(node.id);
     std::vector<Value *> args;
     int i = 0;

@@ -13,10 +13,7 @@ TEST_DIRS = [
     #"supplement/func",
     "supplement/performance"#,
      #"supplement/final_performance",
-    
-    
 ]
-
 
 
 def evaluate(test_base_path, testcases, optimize):

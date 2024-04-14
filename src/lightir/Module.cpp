@@ -67,15 +67,15 @@ void Module::set_print_name() {
 }
 
 std::string Module::print() {
-    LOG_DEBUG << "print global";
+    //LOG_DEBUG << "print global";
     set_print_name();
-    LOG_DEBUG << "print function";
+    //LOG_DEBUG << "print function";
     std::string module_ir;
     for (auto &global_val : this->global_list_) {
         module_ir += global_val.print();
         module_ir += "\n";
     }
-    LOG_DEBUG << "print function";
+    //LOG_DEBUG << "print function";
     for (auto &func : this->function_list_) {
         module_ir += func.print();
         module_ir += "\n";

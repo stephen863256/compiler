@@ -1,8 +1,14 @@
 #pragma once
 
 #include "ASMInstruction.hpp"
+#include "BasicBlock.hpp"
+#include "Function.hpp"
 #include "Module.hpp"
 #include "Register.hpp"
+#include "Value.hpp"
+#include <string>
+#include <unordered_map>
+#include "RegAlloc.hpp"
 
 class CodeGen {
   public:
@@ -45,6 +51,9 @@ class CodeGen {
     void store_from_greg(Value *, const Reg &);
     void store_from_freg(Value *, const FReg &);
 
+    std::pair<int,bool> get_reg(Value *);
+
+
     void gen_prologue();
     void gen_ret();
     void gen_br();
@@ -80,9 +89,22 @@ class CodeGen {
             frame_size = 0;
             offset_map.clear();
         }
-
     } context;
-
+    std::map<std::pair<std::string,int >, int> arg_map; // 函数参数的位置
     Module *m;
     std::list<ASMInstruction> output;
+    std::map<Value*, Interval*> ireg_alloc;
+    std::map<Value*, Interval*> freg_alloc;
+    std::map<int, Value*> ireg_map;
+    std::map<int, Value*> freg_map;
+    std::list<BasicBlock*> block_order;
+    bool is_br = false;
+    BasicBlock *br_bb = nullptr;
+    int br_num = -1;
+    std::map<int,Value*> ireg_map_false;
+    std::map<int,Value*> freg_map_false;
+    std::vector<std::pair<BasicBlock *, BasicBlock *>> br_map;
+    std::map<BasicBlock *, BasicBlock *> br_false_map;
+    std::map<BasicBlock *, std::map<int, Value *>> br_ireg_map;
+    std::map<BasicBlock *, std::map<int, Value *>> br_freg_map;
 };
